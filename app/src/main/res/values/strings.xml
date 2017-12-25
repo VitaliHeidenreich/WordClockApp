@@ -4,4 +4,7 @@
     <string name="send_message">Send message</string>
     <string name="change_pin_d6">Change Pin D6</string>
     <string name="change_pin_d7">Change Pin D7</string>
+    <string name="zweite_seite">Zweite Seite</string>
+    <string name="menu_action_setting">Settings</string>
+    <string name="menu_action_about_us">About us</string>
 </resources>

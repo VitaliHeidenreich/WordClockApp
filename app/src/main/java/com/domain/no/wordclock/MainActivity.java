@@ -4,10 +4,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnSendMessage;
     private Button btnPortD6Control;
     private Button btnPortD7Control;
+    private Toolbar myToolbar;
 
     public static final int SERVERPORT = 23;
     public static final String SERVERIP = "192.168.1.200";
@@ -36,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.content_main);
 
         sendText = (EditText) findViewById(R.id.sendMessage);
         btnSendMessage = (Button) findViewById(R.id.sendMessageBtn);
@@ -70,27 +74,27 @@ public class MainActivity extends AppCompatActivity {
         UIHandler = new Handler();
         this.CteateSocketThread = new Thread(new CteateSocketThread());
         this.CteateSocketThread.start();
+
+        myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuInflater myMenuInflater = getMenuInflater();
+        myMenuInflater.inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if(item.getItemId()==R.id.action_setting){
+            Toast.makeText(MainActivity.this,"Klicket on settings", Toast.LENGTH_SHORT).show();
         }
-
+        if(item.getItemId()==R.id.action_about_us){
+            Toast.makeText(MainActivity.this,"Klicket on info", Toast.LENGTH_SHORT).show();
+        }
         return super.onOptionsItemSelected(item);
     }
 
