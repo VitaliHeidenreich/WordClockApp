@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     PrintStream printer= null;
     Handler UIHandler;
     Thread CteateSocketThread = null;
+    Socket socket = null;
 
     //Objekte anlegen
     private EditText sendText;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnSendMessage;
     private Button btnPortD6Control;
     private Button btnPortD7Control;
+    private Button btnConnect;
     private Toolbar myToolbar;
 
     public static final int SERVERPORT = 23;
@@ -47,26 +49,34 @@ public class MainActivity extends AppCompatActivity {
         receiveText = (EditText) findViewById(R.id.receiveMessage);
         btnPortD6Control = (Button) findViewById(R.id.pinD6Control);
         btnPortD7Control = (Button) findViewById(R.id.pinD7Control);
+        btnConnect = (Button) findViewById(R.id.btnConnectToServer);
 
-        btnSendMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                printer.println(sendText.getText());
-                sendText.setText("");
-            }
-        });
-        btnPortD6Control.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                printer.println("X");
-            }
-        });
-        btnPortD7Control.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                printer.println("Y");
-            }
-        });
+//        btnSendMessage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                printer.println(sendText.getText());
+//                sendText.setText("");
+//            }
+//        });
+//        btnPortD6Control.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                printer.println("X");
+//            }
+//        });
+//        btnPortD7Control.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                printer.println("Y");
+//            }
+//        });
+
+        btnSendMessage.setOnClickListener(btnListener);
+        btnPortD6Control.setOnClickListener(btnListener);
+        btnPortD7Control.setOnClickListener(btnListener);
+        btnConnect.setOnClickListener(btnListener);
+
+
 
         //Empfangsbox soll nicht editierbar sein
         receiveText.setKeyListener(null);
@@ -100,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
 
     class CteateSocketThread implements Runnable{
         public void run(){
-            Socket socket = null;
             try{
                 socket = new Socket(InetAddress.getByName(SERVERIP), SERVERPORT);
                 CreateReaderAndPrinterThread commThread = new CreateReaderAndPrinterThread(socket);
@@ -158,4 +167,33 @@ public class MainActivity extends AppCompatActivity {
             receiveText.setText(receiveText.getText() + nachricht + "\n");
         }
     }
+
+    // Auswertung der Tasten
+    private View.OnClickListener btnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if(socket!=null){
+                if(view == btnSendMessage){
+                    printer.println(sendText.getText());
+                    sendText.setText("");
+                }
+                else if(view == btnPortD6Control){
+                    printer.println("X");
+                }
+                else if(view == btnPortD7Control){
+                    printer.println("Y");
+                }
+                else if((view==btnConnect)&&(socket!=null)) {
+                    Toast.makeText(MainActivity.this, "You are already connected!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            else if((view==btnConnect)&&(socket==null)){
+                CteateSocketThread = new Thread(new CteateSocketThread());
+                CteateSocketThread.start();
+            }
+            else{
+                Toast.makeText(MainActivity.this,"You are not connected to a server!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 }

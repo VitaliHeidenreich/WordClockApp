@@ -80,4 +80,15 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
+    <Button
+        android:id="@+id/btnConnectToServer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/pinD6Control"
+        android:layout_toEndOf="@+id/pinD6Control"
+        android:layout_toLeftOf="@+id/pinD7Control"
+        android:layout_toRightOf="@+id/pinD6Control"
+        android:layout_toStartOf="@+id/pinD7Control"
+        android:text="@string/connect" />
+
 </RelativeLayout>
