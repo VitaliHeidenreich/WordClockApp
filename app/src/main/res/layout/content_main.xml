@@ -91,4 +91,13 @@
         android:layout_toStartOf="@+id/pinD7Control"
         android:text="@string/connect" />
 
+    <Button
+        android:id="@+id/btnTestButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/pinD6Control"
+        android:text="@string/testbutton" />
+
 </RelativeLayout>

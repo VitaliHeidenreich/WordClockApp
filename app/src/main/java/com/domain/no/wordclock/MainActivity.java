@@ -18,7 +18,9 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.NoRouteToHostException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private Button btnConnect;
     private Toolbar myToolbar;
 
+    //Testbutton
+    private Button btnTest;
+
     public static final int SERVERPORT = 23;
     public static final String SERVERIP = "192.168.1.200";
 
@@ -51,36 +56,21 @@ public class MainActivity extends AppCompatActivity {
         btnPortD7Control = (Button) findViewById(R.id.pinD7Control);
         btnConnect = (Button) findViewById(R.id.btnConnectToServer);
 
-//        btnSendMessage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                printer.println(sendText.getText());
-//                sendText.setText("");
-//            }
-//        });
-//        btnPortD6Control.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                printer.println("X");
-//            }
-//        });
-//        btnPortD7Control.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                printer.println("Y");
-//            }
-//        });
+        //Testbutton
+        btnTest = (Button) findViewById(R.id.btnTestButton);
 
         btnSendMessage.setOnClickListener(btnListener);
         btnPortD6Control.setOnClickListener(btnListener);
         btnPortD7Control.setOnClickListener(btnListener);
         btnConnect.setOnClickListener(btnListener);
 
-
+        //Testbutton
+        btnTest.setOnClickListener(btnListener);
 
         //Empfangsbox soll nicht editierbar sein
         receiveText.setKeyListener(null);
 
+        // Für die Server-Client-Kommunikation
         UIHandler = new Handler();
         this.CteateSocketThread = new Thread(new CteateSocketThread());
         this.CteateSocketThread.start();
@@ -115,8 +105,14 @@ public class MainActivity extends AppCompatActivity {
                 CreateReaderAndPrinterThread commThread = new CreateReaderAndPrinterThread(socket);
                 new Thread(commThread).start();
                 return;
-            }catch(IOException e){
-                e.printStackTrace();
+
+            }catch(UnknownHostException e1){
+                e1.printStackTrace();
+                System.out.println("UnknownHostException: " + e1.toString());
+                return;
+            }catch(IOException e2) {
+                e2.printStackTrace();
+                return;
             }
         }
     }
@@ -172,7 +168,20 @@ public class MainActivity extends AppCompatActivity {
     private View.OnClickListener btnListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(socket!=null){
+            if(view==btnConnect){
+                if(socket!=null){
+                    try{
+                        socket.close();
+                        Toast.makeText(MainActivity.this,"Reconnect to " + SERVERIP + ":" +SERVERPORT, Toast.LENGTH_SHORT).show();
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+                CteateSocketThread = new Thread(new CteateSocketThread());
+                CteateSocketThread.start();
+            }
+
+            else if(socket!=null){
                 if(view == btnSendMessage){
                     printer.println(sendText.getText());
                     sendText.setText("");
@@ -183,16 +192,16 @@ public class MainActivity extends AppCompatActivity {
                 else if(view == btnPortD7Control){
                     printer.println("Y");
                 }
-                else if((view==btnConnect)&&(socket!=null)) {
-                    Toast.makeText(MainActivity.this, "You are already connected!", Toast.LENGTH_SHORT).show();
-                }
-            }
-            else if((view==btnConnect)&&(socket==null)){
-                CteateSocketThread = new Thread(new CteateSocketThread());
-                CteateSocketThread.start();
+                else{}
             }
             else{
-                Toast.makeText(MainActivity.this,"You are not connected to a server!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"You are not connected to " + SERVERIP + ":" +SERVERPORT, Toast.LENGTH_SHORT).show();
+            }
+
+            //Testbutton
+            if(view == btnTest){
+                Esp8266Control abc = new Esp8266Control();
+                Toast.makeText(MainActivity.this,"Das Kommando lautet: " + abc.getString(), Toast.LENGTH_SHORT).show();
             }
         }
     };
