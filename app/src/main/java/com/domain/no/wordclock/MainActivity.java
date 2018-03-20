@@ -1,5 +1,6 @@
 package com.domain.no.wordclock;
 
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +25,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SettingsDialog.SettingsDialogListener{
 
     PrintStream printer= null;
     Handler UIHandler;
@@ -42,14 +43,21 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar myToolbar;
 
+    private Button tbtn;
+
     ColorPickerDialog colorPickerDialog;
     int color = Color.parseColor("#33b5e5");
 
     //Testbutton
     private Button btnTest;
 
-    public static final int SERVERPORT = 23;
-    public static final String SERVERIP = "192.168.1.200";
+    public static int SERVERPORT = 23;
+    public static String SERVERIP = "192.168.1.200";
+
+    @Override
+    public void applyTexts(String ipAdress, String portNumber) {
+        receiveText.setText(ipAdress + "\n" + portNumber);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +70,11 @@ public class MainActivity extends AppCompatActivity {
         btnConnect = (Button) findViewById(R.id.btnConnectToServer);
         textViewColor = (TextView) findViewById(R.id.textViewColor);
 
-
         //Testbutton
         btnSetColor = (Button) findViewById(R.id.btnSetColor);
+        tbtn = (Button) findViewById(R.id.tbtn);
         btnSendMessage.setOnClickListener(btnListener);
         btnConnect.setOnClickListener(btnListener);
-
 
         //Testbutton
         btnSetColor.setOnClickListener(btnListener);
@@ -82,6 +89,20 @@ public class MainActivity extends AppCompatActivity {
 
         myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
+
+        tbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+
+    }
+
+    public void openDialog(){
+        SettingsDialog settingDialog = new SettingsDialog();
+        settingDialog.show(getSupportFragmentManager(),"Example Dialog");
     }
 
     @Override
@@ -95,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_setting){
-            Toast.makeText(MainActivity.this,"Klicket on settings", Toast.LENGTH_SHORT).show();
+            openDialog();
         }
         if(item.getItemId()==R.id.action_about_us){
             Toast.makeText(MainActivity.this,"Klicket on info", Toast.LENGTH_SHORT).show();
@@ -194,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
                 // Einstellung der Farbe
                 else if(view == btnSetColor){
                     // Auswahl der Farbe
-                    Toast.makeText(MainActivity.this,"Set Color", Toast.LENGTH_SHORT).show();
                     colorPickerDialog = new ColorPickerDialog(MainActivity.this, color);
                     //colorPickerDialog.setAlphaSliderVisible(true);
                     colorPickerDialog.setHexValueEnabled(true);
