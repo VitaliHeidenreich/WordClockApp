@@ -1,5 +1,7 @@
 package com.domain.no.wordclock;
 
+import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -10,19 +12,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import net.margaritov.preference.colorpicker.ColorPickerDialog;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.NoRouteToHostException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SettingsDialog.SettingsDialogListener{
 
     PrintStream printer= null;
     Handler UIHandler;
@@ -32,17 +35,29 @@ public class MainActivity extends AppCompatActivity {
     //Objekte anlegen
     private EditText sendText;
     private EditText receiveText;
+    private TextView textViewColor;
+
     private Button btnSendMessage;
-    private Button btnPortD6Control;
-    private Button btnPortD7Control;
     private Button btnConnect;
+    private Button btnSetColor;
+
     private Toolbar myToolbar;
+
+    private Button tbtn;
+
+    ColorPickerDialog colorPickerDialog;
+    int color = Color.parseColor("#33b5e5");
 
     //Testbutton
     private Button btnTest;
 
-    public static final int SERVERPORT = 23;
-    public static final String SERVERIP = "192.168.1.200";
+    public static int SERVERPORT = 23;
+    public static String SERVERIP = "192.168.1.200";
+
+    @Override
+    public void applyTexts(String ipAdress, String portNumber) {
+        receiveText.setText(ipAdress + "\n" + portNumber);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,20 +67,17 @@ public class MainActivity extends AppCompatActivity {
         sendText = (EditText) findViewById(R.id.sendMessage);
         btnSendMessage = (Button) findViewById(R.id.sendMessageBtn);
         receiveText = (EditText) findViewById(R.id.receiveMessage);
-        btnPortD6Control = (Button) findViewById(R.id.pinD6Control);
-        btnPortD7Control = (Button) findViewById(R.id.pinD7Control);
         btnConnect = (Button) findViewById(R.id.btnConnectToServer);
+        textViewColor = (TextView) findViewById(R.id.textViewColor);
 
         //Testbutton
-        btnTest = (Button) findViewById(R.id.btnTestButton);
-
+        btnSetColor = (Button) findViewById(R.id.btnSetColor);
+        tbtn = (Button) findViewById(R.id.tbtn);
         btnSendMessage.setOnClickListener(btnListener);
-        btnPortD6Control.setOnClickListener(btnListener);
-        btnPortD7Control.setOnClickListener(btnListener);
         btnConnect.setOnClickListener(btnListener);
 
         //Testbutton
-        btnTest.setOnClickListener(btnListener);
+        btnSetColor.setOnClickListener(btnListener);
 
         //Empfangsbox soll nicht editierbar sein
         receiveText.setKeyListener(null);
@@ -77,6 +89,20 @@ public class MainActivity extends AppCompatActivity {
 
         myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
+
+        tbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+
+    }
+
+    public void openDialog(){
+        SettingsDialog settingDialog = new SettingsDialog();
+        settingDialog.show(getSupportFragmentManager(),"Example Dialog");
     }
 
     @Override
@@ -90,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_setting){
-            Toast.makeText(MainActivity.this,"Klicket on settings", Toast.LENGTH_SHORT).show();
+            openDialog();
         }
         if(item.getItemId()==R.id.action_about_us){
             Toast.makeText(MainActivity.this,"Klicket on info", Toast.LENGTH_SHORT).show();
@@ -186,11 +212,22 @@ public class MainActivity extends AppCompatActivity {
                     printer.println(sendText.getText());
                     sendText.setText("");
                 }
-                else if(view == btnPortD6Control){
-                    printer.println("X");
-                }
-                else if(view == btnPortD7Control){
-                    printer.println("Y");
+                // Einstellung der Farbe
+                else if(view == btnSetColor){
+                    // Auswahl der Farbe
+                    colorPickerDialog = new ColorPickerDialog(MainActivity.this, color);
+                    //colorPickerDialog.setAlphaSliderVisible(true);
+                    colorPickerDialog.setHexValueEnabled(true);
+                    colorPickerDialog.setTitle("Farbauswahl");
+                    colorPickerDialog.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
+                        @Override
+                        public void onColorChanged(int i) {
+                            color = i;
+                            textViewColor.setText("+++#"+Integer.toHexString(color).substring(2)+"$");
+                            printer.println("+++#"+Integer.toHexString(color).substring(2)+"$");
+                        }
+                    });
+                    colorPickerDialog.show();
                 }
                 else{}
             }
@@ -198,11 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"You are not connected to " + SERVERIP + ":" +SERVERPORT, Toast.LENGTH_SHORT).show();
             }
 
-            //Testbutton
-            if(view == btnTest){
-                Esp8266Control abc = new Esp8266Control();
-                Toast.makeText(MainActivity.this,"Das Kommando lautet: " + abc.getString(), Toast.LENGTH_SHORT).show();
-            }
+
         }
     };
 }

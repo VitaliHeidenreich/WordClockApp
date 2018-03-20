@@ -47,26 +47,17 @@
         app:layout_constraintTop_toBottomOf="@+id/sendMessageBtn" />
 
     <Button
-        android:id="@+id/pinD6Control"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/receiveMessage"
-        android:text="@string/change_pin_d6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/receiveMessage" />
-
-    <Button
-        android:id="@+id/pinD7Control"
+        android:id="@+id/btnSetColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/receiveMessage"
-        android:text="@string/change_pin_d7"
+        android:layout_toEndOf="@+id/btnConnectToServer"
+        android:layout_toRightOf="@+id/btnConnectToServer"
+        android:text="Farbe"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pinD6Control" />
+        app:layout_constraintTop_toBottomOf="@+id/receiveMessage" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -84,20 +75,28 @@
         android:id="@+id/btnConnectToServer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/pinD6Control"
-        android:layout_toEndOf="@+id/pinD6Control"
-        android:layout_toLeftOf="@+id/pinD7Control"
-        android:layout_toRightOf="@+id/pinD6Control"
-        android:layout_toStartOf="@+id/pinD7Control"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/receiveMessage"
         android:text="@string/connect" />
 
+    <TextView
+        android:id="@+id/textViewColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/btnSetColor"
+        android:layout_toEndOf="@+id/btnConnectToServer"
+        android:layout_toRightOf="@+id/btnConnectToServer" />
+
     <Button
-        android:id="@+id/btnTestButton"
-        android:layout_width="fill_parent"
+        android:id="@+id/tbtn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/pinD6Control"
-        android:text="@string/testbutton" />
+        android:layout_below="@+id/btnSetColor"
+        android:text="tbtn" />
 
 </RelativeLayout>
