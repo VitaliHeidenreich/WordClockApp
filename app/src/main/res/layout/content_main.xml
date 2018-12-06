@@ -44,7 +44,8 @@
         android:scrollbars="vertical"
         android:text=""
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendMessageBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/sendMessageBtn"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/btnSetColor"
@@ -53,9 +54,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/receiveMessage"
-        android:layout_toEndOf="@+id/btnConnectToServer"
-        android:layout_toRightOf="@+id/btnConnectToServer"
-        android:text="Farbe"
+        android:layout_toEndOf="@+id/btnConnectBT"
+        android:layout_toRightOf="@+id/btnConnectBT"
+        android:text="@string/farbe"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/receiveMessage" />
 
@@ -72,13 +73,28 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
     <Button
-        android:id="@+id/btnConnectToServer"
+        android:id="@+id/btnConnectBT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tbtn"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/receiveMessage"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="199dp"
         android:text="@string/connect" />
+
+    <Button
+        android:id="@+id/btnDisConnectBT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tbtn"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="89dp"
+        android:layout_marginLeft="89dp"
+        android:layout_marginTop="199dp"
+        android:text="@string/disconnect" />
 
     <TextView
         android:id="@+id/textViewColor"
@@ -87,16 +103,29 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/btnSetColor"
-        android:layout_toEndOf="@+id/btnConnectToServer"
-        android:layout_toRightOf="@+id/btnConnectToServer" />
+        android:layout_toEndOf="@+id/btnConnectBT"
+        android:layout_toRightOf="@+id/btnConnectBT" />
 
     <Button
         android:id="@+id/tbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/btnSetColor"
-        android:text="tbtn" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="-46dp"
+        android:text="@string/tbtn" />
+
+    <TextView
+        android:id="@+id/t1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="62dp"
+        android:layout_marginBottom="29dp"
+        android:text="TextView" />
 
 </RelativeLayout>

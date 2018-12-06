@@ -8,4 +8,7 @@
     <string name="menu_action_about_us">About us</string>
     <string name="connect">Connect</string>
     <string name="testbutton">TestButton</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="tbtn">tbtn</string>
+    <string name="farbe">Farbe</string>
 </resources>

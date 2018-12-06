@@ -89,11 +89,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tbtn"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="89dp"
-        android:layout_marginLeft="89dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginTop="199dp"
+        android:layout_toEndOf="@+id/btnConnectBT"
+        android:layout_toRightOf="@+id/btnConnectBT"
         android:text="@string/disconnect" />
 
     <TextView
