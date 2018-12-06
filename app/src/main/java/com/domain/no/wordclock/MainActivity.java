@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
     private EditText sendText;
     private EditText receiveText;
     private TextView textViewColor;
-    private TextView t1;
+    private TextView txtConnectionstatus;
 
     private Button btnSendMessage;
     private Button btnConnect;
@@ -88,9 +88,6 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
     //Testbutton
     private Button btnTest;
 
-    public static int SERVERPORT = 23;
-    public static String SERVERIP = "192.168.1.200";
-
 //    @Override
 //    public void applyTexts(String ipAdress, String portNumber) {
 //        receiveText.setText(ipAdress + "\n" + portNumber);
@@ -105,12 +102,18 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
         //BT
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        sendText = (EditText) findViewById(R.id.sendMessage);
+        //Buttons
         btnSendMessage = (Button) findViewById(R.id.sendMessageBtn);
-        receiveText = (EditText) findViewById(R.id.receiveMessage);
         btnConnect = (Button) findViewById(R.id.btnConnectBT);
+
+
+        //TestMessages
+        sendText = (EditText) findViewById(R.id.sendMessage);
+
+        receiveText = (EditText) findViewById(R.id.receiveMessage);
+
         textViewColor = (TextView) findViewById(R.id.textViewColor);
-        t1 = (TextView) findViewById(R.id.t1);
+        txtConnectionstatus = (TextView) findViewById(R.id.txtConnectionstatus);
         btnDisconnect = (Button) findViewById(R.id.btnDisConnectBT);
 
         //Testbutton
@@ -132,7 +135,7 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
 
         tbtn.setOnClickListener(btnListener);
 
-        t1.setText("You are not connected!\nPress \"CONNECT\"");
+        txtConnectionstatus.setText("You are not connected!\nPress \"CONNECT\"");
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -152,8 +155,8 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
             {
                 for (BluetoothDevice bt : pairedDevices)
                 {
-                    address = bt.getAddress().toString();
-                    name = bt.getName().toString();
+                    address = bt.getAddress();
+                    name = bt.getName();
                     Toast.makeText(getApplicationContext(),"Connected", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -167,7 +170,7 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
 
         try
         {
-            t1.setText("BT Name: "+name+"\nBT Address: "+address);
+            txtConnectionstatus.setText("BT Name: "+name+"\nBT Address: "+address);
         }
         catch(Exception e){Toast.makeText(getApplicationContext(),"Nope! (2)", Toast.LENGTH_SHORT).show();}
     }
@@ -219,7 +222,7 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
             {
                 if(mBluetoothAdapter==null)
                 {
-                    //Log.d(TAG, "MyMassage: No BT!");
+                    Log.d(TAG, "MyMassage: No BT!");
                 }
                 if(!mBluetoothAdapter.isEnabled())
                 {
@@ -253,7 +256,31 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
             }
             else if ( view==tbtn )
             {
-                sendString( );
+                sendString( "Hallo Welt!\n\r" );
+            }
+            else if ( view == btnSendMessage)
+            {
+                if ( mBluetoothAdapter.isEnabled() )
+                {
+                    sendString( sendText.getText().toString() );
+                    sendText.setText("");
+                }
+            }
+            else if(view == btnSetColor){
+                // Auswahl der Farbe
+                colorPickerDialog = new ColorPickerDialog(MainActivity.this, color);
+                //colorPickerDialog.setAlphaSliderVisible(true);
+                colorPickerDialog.setHexValueEnabled(true);
+                colorPickerDialog.setTitle("Farbauswahl");
+                colorPickerDialog.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
+                    @Override
+                    public void onColorChanged(int i) {
+                        color = i;
+                        textViewColor.setText("+++#"+Integer.toHexString(color).substring(2)+"$");
+                        sendString("+++#"+Integer.toHexString(color).substring(2)+"$");
+                    }
+                });
+                colorPickerDialog.show();
             }
             else{
                 Toast.makeText(MainActivity.this,"Sorry! NOP for this button!", Toast.LENGTH_SHORT).show();
@@ -263,13 +290,13 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
         }
     };
 
-    private void sendString( )
+    private void sendString( String str )
     {
         try
         {
             if ( mBluetoothSocket != null )
             {
-                mBluetoothSocket.getOutputStream().write("HalloWelt\n\r".getBytes());
+                mBluetoothSocket.getOutputStream().write(str.getBytes());
             }
         }
         catch (Exception e)
