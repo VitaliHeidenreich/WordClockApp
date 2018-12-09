@@ -37,17 +37,18 @@ import java.net.UnknownHostException;
 import java.util.Set;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity /*implements SettingsDialog.SettingsDialogListener*/{
-
+public class MainActivity extends AppCompatActivity implements SettingsDialog.ExampleDialogListener{
 
     //BT;
     String address = null , name=null;
     private static final String TAG = "MainActivity";
+
     //BT
     BluetoothAdapter mBluetoothAdapter = null;
     BluetoothSocket mBluetoothSocket = null;
     Set<BluetoothDevice> pairedDevices;
     static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
     //BT
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver(){
         public void onReceive(Context context, Intent intent){
@@ -57,12 +58,11 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, mBluetoothAdapter.ERROR);
 
                 switch (state) {
-                    //case BluetoothAdapter.STATE_OFF: Log.d(TAG, "onReceiver1: state off"); break;
-                    //case BluetoothAdapter.STATE_TURNING_OFF: Log.d(TAG, "onReceiver1: state turning off"); break;
-                    //case BluetoothAdapter.STATE_ON: Log.d(TAG, "onReceiver1: state on"); break;
-                    //case BluetoothAdapter.STATE_TURNING_ON: Log.d(TAG, "onReceiver1: state turning off"); break;
-                    default:
-                        break;
+                    case BluetoothAdapter.STATE_OFF: Log.d(TAG, "onReceiver1: state off"); break;
+                    case BluetoothAdapter.STATE_TURNING_OFF: Log.d(TAG, "onReceiver1: state turning off"); break;
+                    case BluetoothAdapter.STATE_ON: Log.d(TAG, "onReceiver1: state on"); break;
+                    case BluetoothAdapter.STATE_TURNING_ON: Log.d(TAG, "onReceiver1: state turning off"); break;
+                    default: break;
                 }
             }
         }
@@ -74,26 +74,24 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
     private TextView textViewColor;
     private TextView txtConnectionstatus;
 
+    //Buttons
     private Button btnSendMessage;
     private Button btnConnect;
     private Button btnSetColor;
     private Button btnDisconnect;
+    private Button tbtn;
+    //Testbutton
+    private Button btnTest;
 
     private Toolbar myToolbar;
-
-    private Button tbtn;
 
     ColorPickerDialog colorPickerDialog;
     int color = Color.parseColor("#33b5e5");
 
-    //Testbutton
-    private Button btnTest;
+    private Handler handler = new Handler();
 
-//    @Override
-//    public void applyTexts(String ipAdress, String portNumber) {
-//        receiveText.setText(ipAdress + "\n" + portNumber);
-//    }
-
+    //Für die Suche von Geräten
+    String mArrayAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +135,10 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
         tbtn.setOnClickListener(btnListener);
 
         txtConnectionstatus.setText("You are not connected!\nPress \"CONNECT\"");
+        txtConnectionstatus.setTextColor(Color.rgb(255,0,0));
+        txtConnectionstatus.setBackgroundColor(Color.rgb(236, 168,178));
 
+        handler.postDelayed(runnable, 1000);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -159,7 +160,7 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
                 {
                     address = bt.getAddress();
                     name = bt.getName();
-                    Toast.makeText(getApplicationContext(),"Connected", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(),"Connected", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -173,6 +174,8 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
         try
         {
             txtConnectionstatus.setText("BT Name: "+name+"\nBT Address: "+address);
+            txtConnectionstatus.setTextColor(Color.rgb(0,255,0));
+            txtConnectionstatus.setBackgroundColor(Color.rgb(200, 250,200));
         }
         catch(Exception e){Toast.makeText(getApplicationContext(),"Nope! (2)", Toast.LENGTH_SHORT).show();}
     }
@@ -187,7 +190,7 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
     public void openDialog()
     {
         SettingsDialog settingDialog = new SettingsDialog();
-        settingDialog.show(getSupportFragmentManager(),"Example Dialog");
+        settingDialog.show(getSupportFragmentManager(),"My Dialog");
     }
 
     @Override
@@ -258,7 +261,8 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
             }
             else if ( view==tbtn )
             {
-                sendString( "Hallo Welt!\n\r" );
+                sendString( "Hallo Welt! \n\r" );
+                receiveText.setText("Geräteliste:\n" + mArrayAdapter);
             }
             else if ( view == btnSendMessage)
             {
@@ -304,6 +308,31 @@ public class MainActivity extends AppCompatActivity /*implements SettingsDialog.
         catch (Exception e)
         {
             Toast.makeText(getApplicationContext(),e.getMessage(), Toast.LENGTH_SHORT).show();
+            txtConnectionstatus.setText("Ups, connection lost!\nPress \"CONNECT\"");
+            txtConnectionstatus.setTextColor(Color.rgb(255,0,0));
+            txtConnectionstatus.setBackgroundColor(Color.rgb(236, 168,178));
         }
+    }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            /* do what you need to do */
+            if ( ( mBluetoothSocket == null ) )
+            {
+                //txtConnectionstatus.setTextColor(Color.rgb(255,0,0));
+            }
+            else
+            {
+                //txtConnectionstatus.setTextColor(Color.rgb(0, 255, 0));
+            }
+            /* and here comes the "trick" */
+            handler.postDelayed(this, 1000);
+        }
+    };
+
+    @Override
+    public void applyTexts(String textToBeSended){
+        receiveText.setText(receiveText.getText().toString() + "\n" + textToBeSended);
     }
 }

@@ -3,17 +3,10 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <EditText
-        android:hint="Add IP xx.xxx.xxx.xxx"
-        android:id="@+id/edit_ip"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <EditText
-        android:id="@+id/edit_port"
+        android:id="@+id/editConnectivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/edit_ip"
-        android:hint="Add Port" />
+        android:hint="Add text here"
+        android:inputType="" />
+
 </RelativeLayout>

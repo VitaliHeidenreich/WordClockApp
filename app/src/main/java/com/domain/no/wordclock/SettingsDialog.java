@@ -17,52 +17,53 @@ import android.widget.EditText;
 
 public class SettingsDialog extends AppCompatDialogFragment {
 
-    private EditText edit_ip;
-    private EditText edit_port;
-    private SettingsDialogListener listener;
+    private EditText editConnectivity;
+    //private EditText edit_port;
+    private ExampleDialogListener listener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder((getActivity()));
 
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.layout_settings, null);
+        LayoutInflater mInflater = getActivity().getLayoutInflater();
+        View mView = mInflater.inflate(R.layout.layout_settings, null);
 
-        builder.setView(view)
+        editConnectivity = (EditText) mView.findViewById(R.id.editConnectivity);
+
+        mBuilder.setView(mView)
                 .setTitle("Settings")
-                .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                     }
                 })
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String ipAdress = edit_ip.getText().toString();
-                        String portNumber = edit_port.getText().toString();
-                        listener.applyTexts(ipAdress,portNumber);
+
+                        String textToBeSended = editConnectivity.getText().toString();
+                        listener.applyTexts(textToBeSended);
                     }
                 });
-
-        edit_ip = view.findViewById(R.id.edit_ip);
-        edit_port = view.findViewById(R.id.edit_port);
-
-        return builder.create();
+        //sendMessageText = getView().findViewById(R.id.edit_ip);
+        return mBuilder.create();
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
 
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
         try{
-            listener = (SettingsDialogListener) context;
-        } catch (ClassCastException e){
-            throw new ClassCastException(context.toString() + "Error!");
+            listener = (ExampleDialogListener) context;
+        }
+        catch(ClassCastException e)
+        {
+            throw new ClassCastException(context.toString()+"bla");
         }
     }
 
-    public interface SettingsDialogListener{
-        void applyTexts(String ipAdress, String portNumber);
+    public interface ExampleDialogListener{
+        void applyTexts(String textToBeSended);
     }
 }
