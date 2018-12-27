@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.support.v7.widget.Toolbar;
@@ -27,21 +25,21 @@ import android.widget.Toast;
 
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements SettingsDialog.ExampleDialogListener{
 
+    //Statische Variablen zum Einstellen der APP --> TODEL
+    public static String textBuffer;
+
     //BT;
     String address = null , name=null;
     private static final String TAG = "MainActivity";
+    List<EspDevice> deviceList = new LinkedList<>();
 
     //BT
     BluetoothAdapter mBluetoothAdapter = null;
@@ -78,8 +76,9 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     private Button btnSendMessage;
     private Button btnConnect;
     private Button btnSetColor;
-    private Button btnDisconnect;
+    private Button btnOnBluetooth;
     private Button tbtn;
+    private Button btnSearchDev;
     //Testbutton
     private Button btnTest;
 
@@ -91,10 +90,11 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     private Handler handler = new Handler();
 
     //Für die Suche von Geräten
-    String mArrayAdapter = null;
+    String mArrayAdapter = "";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
 
@@ -113,14 +113,16 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
         textViewColor = (TextView) findViewById(R.id.textViewColor);
         txtConnectionstatus = (TextView) findViewById(R.id.txtConnectionstatus);
-        btnDisconnect = (Button) findViewById(R.id.btnDisConnectBT);
+        btnOnBluetooth = (Button) findViewById(R.id.btnOnBluetooth);
+        btnSearchDev = (Button) findViewById(R.id.btnSearchDev);
 
         //Testbutton
         btnSetColor = (Button) findViewById(R.id.btnSetColor);
         tbtn = (Button) findViewById(R.id.tbtn);
         btnSendMessage.setOnClickListener(btnListener);
         btnConnect.setOnClickListener(btnListener);
-        btnDisconnect.setOnClickListener(btnListener);
+        btnOnBluetooth.setOnClickListener(btnListener);
+        btnSearchDev.setOnClickListener(btnListener);
 
         //Testbutton
         btnSetColor.setOnClickListener(btnListener);
@@ -142,49 +144,84 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void setw() throws IOException
-    {
-        bluetooth_connect_device();
+    private void search_bt_device(){
+        try
+        {
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            pairedDevices = mBluetoothAdapter.getBondedDevices();
+            mArrayAdapter = "";
+            if (pairedDevices.size()>0)
+            {
+                for (BluetoothDevice bt : pairedDevices)
+                {
+                    deviceList.add(new EspDevice(bt.getName(), bt.getAddress()));
+                    mArrayAdapter = mArrayAdapter + bt.getName() + " " + bt.getAddress() + "\n";
+                }
+            }
+        }
+        catch(Exception we){
+            Toast.makeText(getApplicationContext(),"Nope!(1)", Toast.LENGTH_SHORT).show();
+        }
+        receiveText.setText("Device list:\n" + mArrayAdapter);
     }
 
-    private void bluetooth_connect_device() throws IOException
+    @SuppressLint("ClickableViewAccessibility")
+    private void connectToDevice()
     {
         try
         {
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            address = mBluetoothAdapter.getAddress();
             pairedDevices = mBluetoothAdapter.getBondedDevices();
             if (pairedDevices.size()>0)
             {
                 for (BluetoothDevice bt : pairedDevices)
                 {
-                    address = bt.getAddress();
-                    name = bt.getName();
-                    //Toast.makeText(getApplicationContext(),"Connected", Toast.LENGTH_SHORT).show();
+                    deviceList.add(new EspDevice(bt.getName(), bt.getAddress()));
+                    if(bt.getName().contains("WortUhr_")){
+                        name = bt.getName();
+                        address = bt.getAddress();
+                    }
+                    mArrayAdapter = mArrayAdapter + name + " " + address + "\n";
                 }
             }
         }
         catch(Exception we){Toast.makeText(getApplicationContext(),"Nope!(1)", Toast.LENGTH_SHORT).show();}
 
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
-        BluetoothDevice dispositivo = mBluetoothAdapter.getRemoteDevice(address);//connects to the device's address and checks if it's available
-        mBluetoothSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(mUUID);//create a RFCOMM (SPP) connection
-        mBluetoothSocket.connect();
-
-        try
+        if( address != null )
         {
-            txtConnectionstatus.setText("BT Name: "+name+"\nBT Address: "+address);
-            txtConnectionstatus.setTextColor(Color.rgb(0,255,0));
-            txtConnectionstatus.setBackgroundColor(Color.rgb(200, 250,200));
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
+            BluetoothDevice dispositivo = mBluetoothAdapter.getRemoteDevice(address);//connects to the device's address and checks if it's available
+
+            try
+            {
+                mBluetoothSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(mUUID);//create a RFCOMM (SPP) connection
+                mBluetoothSocket.connect();
+                txtConnectionstatus.setText("BT Name: "+name+"\nBT Address: "+address);
+                txtConnectionstatus.setTextColor(Color.rgb(0,255,0));
+                txtConnectionstatus.setBackgroundColor(Color.rgb(200, 250,200));
+            }
+            catch(Exception e){Toast.makeText(getApplicationContext(),"Nope! (2)", Toast.LENGTH_SHORT).show();}
         }
-        catch(Exception e){Toast.makeText(getApplicationContext(),"Nope! (2)", Toast.LENGTH_SHORT).show();}
+        else{
+            Toast.makeText(MainActivity.this,"No WordUhr device found. Only following devices are connected:\n" + mArrayAdapter, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public String getSetting()
+    {
+        return textBuffer;
     }
 
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
-        //unregisterReceiver(BroadcastReceiver);
+        if ( mBluetoothAdapter.isEnabled() )
+        {
+            mBluetoothAdapter.disable();
+            IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+            registerReceiver(mBroadcastReceiver1,BTIntent);
+        }
     }
 
     public void openDialog()
@@ -210,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         }
         if(item.getItemId()==R.id.action_about_us)
         {
-            Toast.makeText(MainActivity.this,"Klicket on info", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this,"No info yet", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -228,6 +265,24 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                 if(mBluetoothAdapter==null)
                 {
                     Log.d(TAG, "MyMassage: No BT!");
+                    Toast.makeText(MainActivity.this,"Sorry! You don't have BT on your device!", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    if( mBluetoothAdapter.isEnabled() ) {
+                        connectToDevice();
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this,"Please turn BT on first!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            else if ( view==btnOnBluetooth )
+            {
+                if(mBluetoothAdapter==null)
+                {
+                    Log.d(TAG, "Sorry! You have no BT on your device!");
+                    Toast.makeText(MainActivity.this,"Sorry! You don't have BT on your device!", Toast.LENGTH_SHORT).show();
                 }
                 if(!mBluetoothAdapter.isEnabled())
                 {
@@ -236,33 +291,14 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                     IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
                     registerReceiver(mBroadcastReceiver1,BTIntent);
                 }
-                try
-                {
-                    setw();
-                }
-                catch (Exception e)
-                {
-                    Toast.makeText(MainActivity.this,"Verbindungsfehler!", Toast.LENGTH_SHORT).show();
-                }
             }
-
-            else if ( view==btnDisconnect )
-            {
-                if(mBluetoothAdapter==null)
-                {
-                    Log.d(TAG, "Sorry! You have no BT on your device!");
-                }
-                if ( mBluetoothAdapter.isEnabled() )
-                {
-                    mBluetoothAdapter.disable();
-                    IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-                    registerReceiver(mBroadcastReceiver1,BTIntent);
-                }
+            else if ( view == btnSearchDev ){
+                search_bt_device();
             }
             else if ( view==tbtn )
             {
                 sendString( "Hallo Welt! \n\r" );
-                receiveText.setText("Geräteliste:\n" + mArrayAdapter);
+                receiveText.setText("Device list:\n" + mArrayAdapter);
             }
             else if ( view == btnSendMessage)
             {
@@ -277,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                 colorPickerDialog = new ColorPickerDialog(MainActivity.this, color);
                 //colorPickerDialog.setAlphaSliderVisible(true);
                 colorPickerDialog.setHexValueEnabled(true);
-                colorPickerDialog.setTitle("Farbauswahl");
+                colorPickerDialog.setTitle("Color picker");
                 colorPickerDialog.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
                     @Override
                     public void onColorChanged(int i) {
@@ -320,19 +356,20 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             /* do what you need to do */
             if ( ( mBluetoothSocket == null ) )
             {
-                //txtConnectionstatus.setTextColor(Color.rgb(255,0,0));
+                //nop
             }
             else
             {
-                //txtConnectionstatus.setTextColor(Color.rgb(0, 255, 0));
+                //nop
             }
-            /* and here comes the "trick" */
-            handler.postDelayed(this, 1000);
+            // Rufe diese Methode zyklisch alle x ms
+            handler.postDelayed(this, 100);
         }
     };
 
     @Override
     public void applyTexts(String textToBeSended){
+        textBuffer = textToBeSended;
         receiveText.setText(receiveText.getText().toString() + "\n" + textToBeSended);
     }
 }

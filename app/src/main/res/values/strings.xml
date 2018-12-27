@@ -8,7 +8,15 @@
     <string name="menu_action_about_us">About us</string>
     <string name="connect">Connect</string>
     <string name="testbutton">TestButton</string>
-    <string name="disconnect">Disconnect</string>
+    <string name="disconnect">turn BT on</string>
     <string name="tbtn">tbtn</string>
-    <string name="farbe">Farbe</string>
+    <string name="farbe">Color</string>
+    
+    <string-array name="Übergänge">
+        <item>Einfaches Einblenden</item>
+        <item>Langsamen Einblenden</item>
+        <item>Fallen</item>
+        <item>Aus dem Weiß heraus</item>
+        <item>Von der Seite</item>
+    </string-array>
 </resources>

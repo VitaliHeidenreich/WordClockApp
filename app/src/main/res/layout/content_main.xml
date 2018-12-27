@@ -81,7 +81,7 @@
 
     <Button
         android:id="@+id/btnConnectBT"
-        android:layout_width="wrap_content"
+        android:layout_width="192dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tbtn"
         android:layout_alignParentStart="true"
@@ -92,14 +92,14 @@
         android:text="@string/connect" />
 
     <Button
-        android:id="@+id/btnDisConnectBT"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnOnBluetooth"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tbtn"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginStart="92dp"
-        android:layout_marginLeft="92dp"
+        android:layout_marginStart="196dp"
+        android:layout_marginLeft="196dp"
         android:layout_marginTop="160dp"
         android:text="@string/disconnect" />
 
@@ -107,9 +107,14 @@
         android:id="@+id/textViewColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tbtn"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/btnSetColor"
+        android:layout_marginStart="-95dp"
+        android:layout_marginLeft="-95dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="94dp"
+        android:layout_marginRight="94dp"
         android:layout_toEndOf="@+id/btnConnectBT"
         android:layout_toRightOf="@+id/btnConnectBT" />
 
@@ -120,19 +125,37 @@
         android:layout_below="@+id/btnSetColor"
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="0dp"
         android:text='send test string "Hallo Welt!"' />
 
     <TextView
         android:id="@+id/txtConnectionstatus"
-        android:layout_width="183dp"
-        android:layout_height="56dp"
-        android:layout_below="@+id/tbtn"
-        android:layout_marginStart="-2dp"
-        android:layout_marginLeft="-2dp"
-        android:layout_marginTop="160dp"
-        android:layout_toEndOf="@+id/btnDisConnectBT"
-        android:layout_toRightOf="@+id/btnDisConnectBT"
+        android:layout_width="385dp"
+        android:layout_height="62dp"
+        android:layout_below="@+id/textViewColor"
+        android:layout_alignStart="@+id/btnConnectBT"
+        android:layout_alignLeft="@+id/btnConnectBT"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="54dp"
+        android:layout_marginEnd="-1dp"
+        android:layout_marginRight="-1dp"
         android:text="TextView" />
+
+    <Button
+        android:id="@+id/btnSearchDev"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_below="@+id/textViewColor"
+        android:layout_alignStart="@+id/tbtn"
+        android:layout_alignLeft="@+id/tbtn"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="149dp"
+        android:layout_marginLeft="149dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="133dp"
+        android:text="Search" />
 
 </RelativeLayout>

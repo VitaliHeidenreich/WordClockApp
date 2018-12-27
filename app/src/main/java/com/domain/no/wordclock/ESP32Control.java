@@ -7,6 +7,10 @@ package com.domain.no.wordclock;
 
 public class ESP32Control extends MainActivity{
 
+    //Konstrukror der Klasse
+    public ESP32Control(){
+
+    }
     //Hier die Kommandos
     private String string = "Hallo Welt";
 

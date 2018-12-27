@@ -9,17 +9,21 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 /**
  * Created by vitali on 19.03.2018.
  */
 
-public class SettingsDialog extends AppCompatDialogFragment {
-
+public class SettingsDialog extends AppCompatDialogFragment
+{
     private EditText editConnectivity;
-    //private EditText edit_port;
+    private Spinner spinnerUebergang;
     private ExampleDialogListener listener;
+    MainActivity mMain = new MainActivity();
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -29,6 +33,14 @@ public class SettingsDialog extends AppCompatDialogFragment {
         View mView = mInflater.inflate(R.layout.layout_settings, null);
 
         editConnectivity = (EditText) mView.findViewById(R.id.editConnectivity);
+        spinnerUebergang = (Spinner) mView.findViewById(R.id.spinnerUebergang);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(mView.getContext(),R.array.Übergänge, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerUebergang.setAdapter(adapter);
+
+        //Hole Einstellungen aus der Main
+        MainActivity mMain = new MainActivity();
+        editConnectivity.setText(mMain.getSetting());
 
         mBuilder.setView(mView)
                 .setTitle("Settings")
