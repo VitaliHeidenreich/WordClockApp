@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     ColorPickerDialog colorPickerDialog;
     int color = Color.parseColor("#33b5e5");
 
-    private Handler handler = new Handler();
+    //private Handler handler = new Handler();
 
     //Für die Suche von Geräten
     String mArrayAdapter = "";
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         setContentView(R.layout.content_main);
 
         //BT
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        //mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         //Buttons
         btnSendMessage = (Button) findViewById(R.id.sendMessageBtn);
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         txtConnectionstatus.setTextColor(Color.rgb(255,0,0));
         txtConnectionstatus.setBackgroundColor(Color.rgb(236, 168,178));
 
-        handler.postDelayed(runnable, 1000);
+        //handler.postDelayed(runnable, 1000);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -216,12 +216,6 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     protected void onDestroy()
     {
         super.onDestroy();
-        if ( mBluetoothAdapter.isEnabled() )
-        {
-            mBluetoothAdapter.disable();
-            IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-            registerReceiver(mBroadcastReceiver1,BTIntent);
-        }
     }
 
     public void openDialog()
@@ -350,10 +344,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         }
     }
 
-    private Runnable runnable = new Runnable() {
+    /*private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            /* do what you need to do */
+            *//* do what you need to do *//*
             if ( ( mBluetoothSocket == null ) )
             {
                 //nop
@@ -365,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             // Rufe diese Methode zyklisch alle x ms
             handler.postDelayed(this, 100);
         }
-    };
+    };*/
 
     @Override
     public void applyTexts(String textToBeSended){

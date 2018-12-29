@@ -2,13 +2,20 @@ package com.domain.no.wordclock;
 
 public class EspDevice {
 
+    EspDevice(){
+        // nop
+    }
+
     EspDevice(String name, String adresse){
         Name = name;
-        Adresse = adresse;
+        Address = adresse;
     }
 
     private String Name;
-    private String Adresse;
+    private String Address;
+    //Dif connection address
+    private static String ConName = null;
+    private static String ConAddress = null;
 
     public String getName() {
         return Name;
@@ -19,10 +26,26 @@ public class EspDevice {
     }
 
     public String getAdresse() {
-        return Adresse;
+        return Address;
     }
 
     public void setAdresse(String adresse) {
-        Adresse = adresse;
+        Address = adresse;
+    }
+
+    public String getConAddress(){
+        return ConAddress;
+    }
+
+    public void setConAddress(String conAddress) {
+        ConAddress = conAddress;
+    }
+
+    public String getConName() {
+        return ConName;
+    }
+
+    public void setConName(String conName){
+        ConName = conName;
     }
 }

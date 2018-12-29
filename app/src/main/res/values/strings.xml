@@ -11,7 +11,7 @@
     <string name="disconnect">turn BT on</string>
     <string name="tbtn">tbtn</string>
     <string name="farbe">Color</string>
-    
+
     <string-array name="Übergänge">
         <item>Einfaches Einblenden</item>
         <item>Langsamen Einblenden</item>
