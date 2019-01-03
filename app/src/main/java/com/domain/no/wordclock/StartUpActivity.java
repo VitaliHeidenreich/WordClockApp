@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
@@ -24,13 +26,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class StartUpActivity extends AppCompatActivity {
+public class StartUpActivity extends AppCompatActivity{
 
 
     //BT
-    BluetoothAdapter mBluetoothAdapter = null;
+    BluetoothConnectivity bt = new BluetoothConnectivity();
     Set<BluetoothDevice> pairedDevices;
     private Switch switchBT;
+    private TextView textViewInfo;
 
     //Buttons
     private Button btnSUSearchDev;
@@ -39,7 +42,9 @@ public class StartUpActivity extends AppCompatActivity {
     //Dev spinner + tools
     private Spinner spinner;
     List<EspDevice> deviceList = new LinkedList<>();
-    EspDevice setDevAddress = new EspDevice();
+    EspDevice setConnectDev = new EspDevice();
+
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +52,13 @@ public class StartUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start_up);
 
         //BT
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        bt.setBluetoothAdapter(BluetoothAdapter.getDefaultAdapter());
 
         btnSUSearchDev = findViewById(R.id.btnSUSearchDev);
         btnSUConnect = findViewById(R.id.btnSUConnect);
         spinner = findViewById(R.id.spinner);
         switchBT = findViewById(R.id.swiSUBluetooth);
+        textViewInfo = findViewById(R.id.textViewInfo);
 
         btnSUSearchDev.setOnClickListener(btnListenerSU);
         btnSUConnect.setOnClickListener(btnListenerSU);
@@ -60,16 +66,23 @@ public class StartUpActivity extends AppCompatActivity {
         connectionMenuVisibility(false);
 
         checkBluetoothState();
+
+        handler.postDelayed(runnable, 100);
+    }
+
+    public void onResume(){
+        super.onResume();
+        connectionMenuVisibility(false);
     }
 
     private void checkBluetoothState(){
-        if( mBluetoothAdapter.getState()==BluetoothAdapter.STATE_ON ){
+        if( bt.getBluetoothAdapter().getState()==BluetoothAdapter.STATE_ON ){
             switchBT.setChecked(true);
-            btnSUSearchDev.setClickable(true);
+            btnSUSearchDev.setVisibility(View.VISIBLE);
         }
         else{
             switchBT.setChecked(false);
-            btnSUSearchDev.setClickable(false);
+            btnSUSearchDev.setVisibility(View.GONE);
         }
     }
 
@@ -77,10 +90,12 @@ public class StartUpActivity extends AppCompatActivity {
         if (vis == true){
             btnSUConnect.setVisibility(View.VISIBLE);
             spinner.setVisibility(View.VISIBLE);
+            textViewInfo.setVisibility(View.VISIBLE);
         }
         else{
             btnSUConnect.setVisibility(View.GONE);
             spinner.setVisibility(View.GONE);
+            textViewInfo.setVisibility(View.GONE);
         }
     }
 
@@ -89,12 +104,12 @@ public class StartUpActivity extends AppCompatActivity {
     {
         @Override
         public void onClick(View view) {
-            if(mBluetoothAdapter == null){
+            if(bt.getBluetoothAdapter() == null){
                 Toast.makeText(StartUpActivity.this,"Sorry!\nYou mobile phone doesn't support bluetooth.", Toast.LENGTH_SHORT).show();
             }
             else{
                 if ( view == btnSUSearchDev ){
-                    if(mBluetoothAdapter.isEnabled()){
+                    if(bt.getBluetoothAdapter().isEnabled()){
                         search_bt_device();
                         if ( deviceList != null ){
                             connectionMenuVisibility(true);
@@ -105,8 +120,12 @@ public class StartUpActivity extends AppCompatActivity {
                     }
                 }
                 else if ( view == btnSUConnect){
-                    pickDev();
-                    openMainActivity();
+                    if(pickDev()){
+                        openMainActivity();
+                    }
+                    else{
+                        Toast.makeText(StartUpActivity.this,"No device found.", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else if ( view == switchBT ){
                     if( switchBT.isChecked() ){
@@ -115,7 +134,7 @@ public class StartUpActivity extends AppCompatActivity {
                         btnSUSearchDev.setVisibility(View.VISIBLE);
                     }
                     else{
-                        mBluetoothAdapter.disable();
+                        bt.getBluetoothAdapter().disable();
                         btnSUSearchDev.setVisibility(View.GONE);
                         connectionMenuVisibility(false);
                         deviceList.clear();
@@ -133,13 +152,12 @@ public class StartUpActivity extends AppCompatActivity {
         deviceList.clear();
         try
         {
-            pairedDevices = mBluetoothAdapter.getBondedDevices();
+            pairedDevices = bt.getBluetoothAdapter().getBondedDevices();
 
             if ( pairedDevices.size() > 0 )
             {
-                for ( BluetoothDevice bt : pairedDevices )
-                {
-                    if( bt.getName().contains("WortUhr_") ){
+                for ( BluetoothDevice bt : pairedDevices ) {
+                    if( bt.getName().contains( setConnectDev.getDefDev() ) ) {
                         deviceList.add(new EspDevice(bt.getName(), bt.getAddress()));
                     }
                 }
@@ -163,19 +181,32 @@ public class StartUpActivity extends AppCompatActivity {
         spinner.setAdapter(arrayAdapter);
     }
 
-    public void pickDev(){
+    public boolean pickDev(){
+        boolean iRet = false;
         for(EspDevice ed : deviceList){
             if(ed.getName().contains(spinner.getSelectedItem().toString())){
-                setDevAddress.setConName(ed.getName());
-                setDevAddress.setConAddress(ed.getAdresse());
+                setConnectDev.setConName(ed.getName());
+                setConnectDev.setConAddress(ed.getAdresse());
+                iRet = true;
             }
         }
-        EspDevice test = new EspDevice();
-        Toast.makeText(StartUpActivity.this,"The dev is:\n" + test.getConName() + "\n" + test.getConAddress(), Toast.LENGTH_SHORT).show();
+        return iRet;
     }
 
     public void openMainActivity(){
         Intent myMainActivity = new Intent(this, com.domain.no.wordclock.MainActivity.class);
         startActivity(myMainActivity);
     }
+
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if ( ( bt.getBluetoothAdapter().getState()== BluetoothAdapter.STATE_OFF ) && switchBT.isChecked() ) {
+                // nop
+            }
+            // Rufe diese Methode zyklisch alle x ms
+            handler.postDelayed(this, 300);
+        }
+    };
 }

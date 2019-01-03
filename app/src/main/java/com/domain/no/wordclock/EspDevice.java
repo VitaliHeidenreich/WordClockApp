@@ -16,6 +16,7 @@ public class EspDevice {
     //Dif connection address
     private static String ConName = null;
     private static String ConAddress = null;
+    private static final String defDev = "Wordclock_";
 
     public String getName() {
         return Name;
@@ -48,4 +49,6 @@ public class EspDevice {
     public void setConName(String conName){
         ConName = conName;
     }
+
+    public static final String getDefDev(){ return defDev; }
 }

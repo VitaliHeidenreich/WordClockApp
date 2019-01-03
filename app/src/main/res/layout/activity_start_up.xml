@@ -18,7 +18,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
         android:layout_marginTop="152dp"
-        android:text='Search for "WortUhr" devices'
+        android:text='Search "WortUhr" device(s)'
         android:textAllCaps="false"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="77dp" />
@@ -56,5 +56,18 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="195dp"
         android:text="Bluetooth" />
+
+    <TextView
+        android:id="@+id/textViewInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/spinner"
+        android:layout_alignLeft="@+id/spinner"
+        android:layout_alignBottom="@+id/btnSUConnect"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginBottom="92dp"
+        android:text="Found device(s):"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
 </RelativeLayout>
