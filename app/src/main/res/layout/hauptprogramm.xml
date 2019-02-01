@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.domain.no.wordclock.MainActivity">
+    tools:context="com.domain.no.wordclock.MainActivity"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <EditText
         android:id="@+id/sendMessage"
@@ -49,13 +51,18 @@
 
     <Button
         android:id="@+id/btnSetColor"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/receiveMessage"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/receiveMessage"
-        android:layout_toEndOf="@+id/btnConnectBT"
-        android:layout_toRightOf="@+id/btnConnectBT"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
         android:text="@string/farbe"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/receiveMessage" />
@@ -72,50 +79,47 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
-    <Button
-        android:id="@+id/btnConnectBT"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tbtn"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="199dp"
-        android:text="@string/connect" />
-
-    <Button
-        android:id="@+id/btnOnBluetooth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tbtn"
-        android:layout_marginStart="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="199dp"
-        android:layout_toEndOf="@+id/btnConnectBT"
-        android:layout_toRightOf="@+id/btnConnectBT"
-        android:text="@string/disconnect" />
-
     <TextView
         android:id="@+id/textViewColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tbtn"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/btnSetColor"
+        android:layout_marginStart="-95dp"
+        android:layout_marginLeft="-95dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="94dp"
+        android:layout_marginRight="94dp"
         android:layout_toEndOf="@+id/btnConnectBT"
         android:layout_toRightOf="@+id/btnConnectBT" />
 
     <Button
         android:id="@+id/tbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
         android:layout_below="@+id/btnSetColor"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:text='send test string "Hallo Welt!"' />
+
+    <TextView
+        android:id="@+id/txtConnectionstatus"
+        android:layout_width="385dp"
+        android:layout_height="48dp"
+        android:layout_alignStart="@+id/btnConnectBT"
+        android:layout_alignLeft="@+id/btnConnectBT"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginTop="-46dp"
-        android:text="@string/tbtn" />
+        android:layout_marginEnd="-1dp"
+        android:layout_marginRight="-1dp"
+        android:layout_marginBottom="1dp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
 
 </RelativeLayout>

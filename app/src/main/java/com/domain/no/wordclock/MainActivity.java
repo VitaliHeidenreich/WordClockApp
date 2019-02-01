@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+
 public class MainActivity extends AppCompatActivity implements SettingsDialog.ExampleDialogListener{
 
     //Statische Variablen zum Einstellen der APP --> TODEL
@@ -63,11 +64,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_main);
+        setContentView(R.layout.hauptprogramm);
 
         //Buttons
         btnSendMessage = findViewById(R.id.sendMessageBtn);
-
 
         //TestMessages
         sendText = findViewById(R.id.sendMessage);
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         receiveText = findViewById(R.id.receiveMessage);
 
         textViewColor = findViewById(R.id.textViewColor);
-        txtConnectionstatus = findViewById(R.id.txtConnectionstatus);
+        txtConnectionstatus = (TextView) findViewById(R.id.txtConnectionstatus);
 
         //Testbutton
         btnSetColor = findViewById(R.id.btnSetColor);
@@ -95,15 +95,13 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
         tbtn.setOnClickListener(btnListener);
 
-        txtConnectionstatus.setText("You are not connected!\nPress \"CONNECT\"");
-        txtConnectionstatus.setTextColor(Color.rgb(255,0,0));
-        txtConnectionstatus.setBackgroundColor(Color.rgb(236, 168,178));
+        connectionStatus(false);
         connectToDevice();
     }
 
     public void onStart(){
         super.onStart();
-        try {bt.getBluetoothSocket().close();} catch (Exception e) {}
+        try { bt.getBluetoothSocket().close();} catch (Exception e) {}
         connectToDevice();
     }
 
@@ -222,15 +220,21 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     }
 
     private void connectionStatus( boolean con ){
-        if(con){
-            txtConnectionstatus.setText("You are connected to:\nName: "+ed.getConName()+"\nAddress: "+ed.getConAddress());
-            txtConnectionstatus.setTextColor(Color.rgb(30,155,30));
-            txtConnectionstatus.setBackgroundColor(Color.rgb(200, 250,200));
+        try{
+            if(con){
+                txtConnectionstatus.setText("You are connected to:\nName: "+ed.getConName()+"\nAddress: "+ed.getConAddress());
+                txtConnectionstatus.setTextColor(Color.rgb(30,155,30));
+                txtConnectionstatus.setBackgroundColor(Color.rgb(200, 250,200));
+            }
+            else{
+                txtConnectionstatus.setText("Ups, connection lost!\nPlz restart the app.");
+                txtConnectionstatus.setTextColor(Color.rgb(255,0,0));
+                txtConnectionstatus.setBackgroundColor(Color.rgb(236, 168,178));
+            }
         }
-        else{
-            txtConnectionstatus.setText("Ups, connection lost!\nPlz restart the app.");
-            txtConnectionstatus.setTextColor(Color.rgb(255,0,0));
-            txtConnectionstatus.setBackgroundColor(Color.rgb(236, 168,178));
+        catch(Exception e){
+            Toast.makeText(MainActivity.this,e.toString(), Toast.LENGTH_SHORT).show();
         }
+
     }
 }
