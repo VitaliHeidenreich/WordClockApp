@@ -19,4 +19,7 @@
         <item>Aus dem Weiß heraus</item>
         <item>Von der Seite</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Show Layout</string>
 </resources>

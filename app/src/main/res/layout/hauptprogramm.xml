@@ -27,43 +27,41 @@
     <Button
         android:id="@+id/sendMessageBtn"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="34dp"
         android:layout_below="@+id/sendMessage"
         android:layout_centerHorizontal="true"
         android:text="@string/send_message"
+        android:textSize="11sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sendMessage" />
 
     <EditText
         android:id="@+id/receiveMessage"
-        android:layout_width="fill_parent"
-        android:layout_height="120dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
         android:layout_below="@+id/sendMessageBtn"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:autofillHints=""
         android:ems="10"
         android:inputType="textMultiLine"
         android:scrollbars="vertical"
         android:text=""
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendMessageBtn"
-        android:autofillHints="" />
+        app:layout_constraintTop_toBottomOf="@+id/sendMessageBtn" />
 
     <Button
         android:id="@+id/btnSetColor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="33dp"
         android:layout_below="@+id/receiveMessage"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
         android:text="@string/farbe"
+        android:textSize="11sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/receiveMessage" />
 
@@ -81,45 +79,65 @@
 
     <TextView
         android:id="@+id/textViewColor"
-        android:layout_width="wrap_content"
+        android:layout_width="229dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tbtn"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="-95dp"
-        android:layout_marginLeft="-95dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="94dp"
-        android:layout_marginRight="94dp"
-        android:layout_toEndOf="@+id/btnConnectBT"
-        android:layout_toRightOf="@+id/btnConnectBT" />
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp" />
 
     <Button
         android:id="@+id/tbtn"
-        android:layout_width="match_parent"
-        android:layout_height="38dp"
-        android:layout_below="@+id/btnSetColor"
-        android:layout_alignParentStart="true"
+        android:layout_width="wrap_content"
+        android:layout_height="33dp"
+        android:layout_below="@+id/receiveMessage"
         android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginTop="0dp"
-        android:text='send test string "Hallo Welt!"' />
+        android:layout_toEndOf="@+id/btnSetColor"
+        android:layout_toRightOf="@+id/btnSetColor"
+        android:text='send test string "Hallo Welt!"'
+        android:textSize="11sp" />
 
     <TextView
         android:id="@+id/txtConnectionstatus"
         android:layout_width="385dp"
         android:layout_height="48dp"
-        android:layout_alignStart="@+id/btnConnectBT"
-        android:layout_alignLeft="@+id/btnConnectBT"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginEnd="-1dp"
-        android:layout_marginRight="-1dp"
-        android:layout_marginBottom="1dp"
-        android:textStyle="bold"
-        android:gravity="center" />
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp"
+        android:gravity="center"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnShowHideLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="33dp"
+        android:layout_alignTop="@+id/tbtn"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_toEndOf="@+id/tbtn"
+        android:layout_toRightOf="@+id/tbtn"
+        android:text="next"
+        android:textSize="11sp" />
 
 
 </RelativeLayout>
