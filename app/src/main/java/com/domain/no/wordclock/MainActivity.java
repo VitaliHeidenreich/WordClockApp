@@ -1,14 +1,22 @@
 package com.domain.no.wordclock;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -25,12 +33,6 @@ import android.widget.Toast;
 
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 
 public class MainActivity extends AppCompatActivity implements SettingsDialog.ExampleDialogListener{
 
@@ -39,7 +41,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
     EspDevice ed = new EspDevice();
     BluetoothConnectivity bt = new BluetoothConnectivity();
+    private final static int REQUEST_ENABLE_BT = 1;
+    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
+    Handler handler;
 
     //Objekte anlegen
     private EditText sendText;
@@ -97,6 +102,99 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
         connectionStatus(false);
         connectToDevice();
+
+        bt.setBluetoothManager((BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE));
+        bt.setBluetoothAdapter(bt.getBluetoothManager().getAdapter());
+        bt.setBluetoothScanner(bt.getBluetoothAdapter().getBluetoothLeScanner());
+
+
+        if (bt.getBluetoothAdapter() != null && !bt.getBluetoothAdapter().isEnabled()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent,REQUEST_ENABLE_BT);
+        }
+
+        // Make sure we have access coarse location enabled, if not, prompt the user to enable it
+        if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("This app needs location access");
+            builder.setMessage("Please grant location access so this app can detect peripherals.");
+            builder.setPositiveButton(android.R.string.ok, null);
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+                }
+            });
+            builder.show();
+        }
+    }
+
+    // Device scan callback.
+    private ScanCallback leScanCallback = new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            receiveText.append("Device Name: " + result.getDevice().getName() + " rssi: " + result.getRssi() + "\n");
+
+            // auto scroll for text view
+            final int scrollAmount = receiveText.getLayout().getLineTop(receiveText.getLineCount()) - receiveText.getHeight();
+            // if there is no need to scroll, scrollAmount will be <=0
+            if (scrollAmount > 0)
+                receiveText.scrollTo(0, scrollAmount);
+        }
+    };
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_COARSE_LOCATION: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    System.out.println("coarse location permission granted");
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Functionality limited");
+                    builder.setMessage("Since location access has not been granted, this app will not be able to discover beacons when in the background.");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                        }
+
+                    });
+                    builder.show();
+                }
+                return;
+            }
+        }
+    }
+
+    public void startScanning() {
+        System.out.println("start scanning");
+        receiveText.setText("");
+        //startScanningButton.setVisibility(View.INVISIBLE);
+        //stopScanningButton.setVisibility(View.VISIBLE);
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                bt.getBluetoothScanner().startScan(leScanCallback);
+            }
+        });
+        handler = new Handler();
+        handler.postDelayed(this::stopScanning, 2000);
+    }
+
+    public void stopScanning() {
+        System.out.println("stopping scanning");
+        receiveText.append("Stopped Scanning");
+        //startScanningButton.setVisibility(View.VISIBLE);
+        //stopScanningButton.setVisibility(View.INVISIBLE);
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                bt.getBluetoothScanner().stopScan(leScanCallback);
+            }
+        });
     }
 
     public void onStart(){
@@ -165,7 +263,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         public void onClick(View view) {
             if ( view==tbtn )
             {
-                sendString( "Hallo Welt! \n\r" );
+                //sendString( "Hallo Welt! \n\r" );
+                startScanning();
             }
             else if ( view == btnSendMessage)
             {
