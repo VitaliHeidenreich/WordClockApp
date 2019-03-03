@@ -206,7 +206,7 @@ public class StartUpActivity extends AppCompatActivity{
                 // nop
             }
             // Rufe diese Methode zyklisch alle x ms
-            handler.postDelayed(this, 300);
+            handler.postDelayed(this, 1000);
         }
     };
 }

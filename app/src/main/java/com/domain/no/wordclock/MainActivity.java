@@ -26,8 +26,10 @@ import android.widget.Toast;
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
     EspDevice ed = new EspDevice();
     BluetoothConnectivity bt = new BluetoothConnectivity();
+
+    String messageLog;
 
 
     //Objekte anlegen
@@ -59,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
     //Für die Suche von Geräten
     String mArrayAdapter = "";
+
+    Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -97,6 +103,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
         connectionStatus(false);
         connectToDevice();
+
+        handler = new Handler();
+
+        handler.postDelayed(runnable1, 100);
     }
 
     public void onStart(){
@@ -122,6 +132,15 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         }
         else{
             Toast.makeText(MainActivity.this,"No WordUhr device found. Only following devices are connected:\n" + mArrayAdapter, Toast.LENGTH_SHORT).show();
+        }
+        // Input und Output anlegen
+        try
+        {
+            bt.setTmpIn(bt.getBluetoothSocket().getInputStream());
+            bt.setTmpOut(bt.getBluetoothSocket().getOutputStream());
+        }
+        catch (IOException ex){
+            ex.printStackTrace();
         }
     }
 
@@ -186,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                     public void onColorChanged(int i) {
                         color = i;
                         textViewColor.setText("+++#"+Integer.toHexString(color).substring(2)+"$");
-                        sendString("+++#"+Integer.toHexString(color).substring(2)+"$");
+                        sendString("X++#"+Integer.toHexString(color).substring(2)+"$");
                     }
                 });
                 colorPickerDialog.show();
@@ -203,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         {
             if ( bt.getBluetoothSocket() != null )
             {
-                bt.getBluetoothSocket().getOutputStream().write(str.getBytes());
+                bt.getTmpOut().write(str.getBytes());
             }
         }
         catch (Exception e)
@@ -211,6 +230,27 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             Toast.makeText(getApplicationContext(),e.getMessage(), Toast.LENGTH_SHORT).show();
             connectionStatus(false);
         }
+    }
+    private String readString()
+    {
+        byte[] buffer = new byte[256];  // buffer store for the stream
+        int bytes; // bytes returned from read()
+        String readMessage = null;
+        try
+        {
+            if ( (bt.getTmpIn()!=null) && ( bt.getTmpIn().available() > 0) )
+            {
+                bytes = bt.getTmpIn().read(buffer);
+                readMessage = new String(buffer, 0, bytes);
+                Log.d(textBuffer, ">>>>>>>>>>>>>>>>>>> input data");
+            }
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(getApplicationContext(),e.getMessage(), Toast.LENGTH_SHORT).show();
+            connectionStatus(false);
+        }
+        return readMessage;
     }
 
     @Override
@@ -237,4 +277,28 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         }
 
     }
+
+    void displayText(){
+        String myStg = readString();
+        if(myStg!=null)
+        {
+            receiveText.setText(receiveText.getText() + myStg);
+        }
+    }
+
+
+    private Runnable runnable1 = new Runnable() {
+        @Override
+        public void run() {
+            try
+            {
+                displayText();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            handler.postDelayed(this, 100);
+        }
+    };
 }
