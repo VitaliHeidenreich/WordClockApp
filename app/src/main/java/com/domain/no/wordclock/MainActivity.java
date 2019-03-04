@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     private Button btnSendMessage;
     private Button btnSetColor;
     private Button tbtn;
+    private Button btnLED;
 
     private Toolbar myToolbar;
 
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
         //Buttons
         btnSendMessage = findViewById(R.id.sendMessageBtn);
+        btnLED = findViewById(R.id.btnLED);
 
         //TestMessages
         sendText = findViewById(R.id.sendMessage);
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
         //Testbutton
         btnSetColor.setOnClickListener(btnListener);
+        btnLED.setOnClickListener(btnListener);
 
         //Empfangsbox soll nicht editierbar sein
         receiveText.setKeyListener(null);
@@ -106,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
         handler = new Handler();
 
-        handler.postDelayed(runnable1, 100);
+        handler.postDelayed(readTextFromBT, 1);
     }
 
     public void onStart(){
@@ -210,6 +213,9 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                 });
                 colorPickerDialog.show();
             }
+            else if (view == btnLED){
+                sendString("X++A$");
+            }
             else{
                 Toast.makeText(MainActivity.this,"Sorry! NOP for this button!", Toast.LENGTH_SHORT).show();
             }
@@ -287,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     }
 
 
-    private Runnable runnable1 = new Runnable() {
+    private Runnable readTextFromBT = new Runnable() {
         @Override
         public void run() {
             try
@@ -298,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             {
                 e.printStackTrace();
             }
-            handler.postDelayed(this, 100);
+            handler.postDelayed(this, 1);
         }
     };
 }

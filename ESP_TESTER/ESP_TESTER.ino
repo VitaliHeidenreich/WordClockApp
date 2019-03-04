@@ -12,11 +12,15 @@
 
 BluetoothSerial SerialBT;
 static String comBuilder = "";
+int state;
 
 void setup() {
   Serial.begin(115200);
   SerialBT.begin("Wordclock_123"); //Bluetooth device name
   Serial.println("The device started, now you can pair it with bluetooth!");
+  pinMode(2, OUTPUT);
+  digitalWrite(2, HIGH);
+  state = 1;
 }
 
 
@@ -26,13 +30,30 @@ void loop() {
     SerialBT.write(Serial.read());
   }
   if (SerialBT.available()) {
+      
       char tempIn = SerialBT.read();
-      //Serial.write(tempIn);
+      
       comBuilder = comBuilder + tempIn;
+      
       if( tempIn == '$' ){
             Serial.print( "Found: " + comBuilder );
-            SerialBT.println("Antwort vom ESP32: " + comBuilder);
+            
             //do something
+            if( comBuilder.equals("X++A$")  )
+            {
+                  if(state == 0 )
+                  {
+                        state = 1;
+                        digitalWrite(2, HIGH);
+                        SerialBT.println("Antwort vom ESP32: LED IS ON");
+                  }
+                  else
+                  {
+                        state = 0;
+                        digitalWrite(2, LOW);
+                         SerialBT.println("Antwort vom ESP32: LED IS OFF");
+                  }
+            }
             comBuilder = "";
       }
   }
