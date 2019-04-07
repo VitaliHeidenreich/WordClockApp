@@ -207,8 +207,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                     @Override
                     public void onColorChanged(int i) {
                         color = i;
-                        textViewColor.setText("X++#"+Integer.toHexString(color).substring(2)+"$");
-                        sendString("X++#"+Integer.toHexString(color).substring(2)+"$");
+                        textViewColor.setText("XF"+Integer.toHexString(color).substring(2)+"$");
+                        sendString("XF"+Integer.toHexString(color).substring(2)+"$");
                     }
 
                 });
