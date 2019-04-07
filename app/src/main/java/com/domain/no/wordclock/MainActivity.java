@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         public void onClick(View view) {
             if ( view==tbtn )
             {
-                sendString( "Hallo Welt! \n\r" );
+                sendString( "Hallo Welt!" );
             }
             else if ( view == btnSendMessage)
             {
@@ -207,9 +207,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                     @Override
                     public void onColorChanged(int i) {
                         color = i;
-                        textViewColor.setText("+++#"+Integer.toHexString(color).substring(2)+"$");
+                        textViewColor.setText("X++#"+Integer.toHexString(color).substring(2)+"$");
                         sendString("X++#"+Integer.toHexString(color).substring(2)+"$");
                     }
+
                 });
                 colorPickerDialog.show();
             }
