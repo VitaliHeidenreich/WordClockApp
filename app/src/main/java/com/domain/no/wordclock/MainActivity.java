@@ -27,6 +27,9 @@ import net.margaritov.preference.colorpicker.ColorPickerDialog;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     private Button btnSetColor;
     private Button tbtn;
     private Button btnLED;
+    private Button btnActualTime;
 
     private Toolbar myToolbar;
 
@@ -76,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         //Buttons
         btnSendMessage = findViewById(R.id.sendMessageBtn);
         btnLED = findViewById(R.id.btnLED);
+        btnActualTime = findViewById(R.id.sendAndroidTime);
 
         //TestMessages
         sendText = findViewById(R.id.sendMessage);
@@ -94,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         //Testbutton
         btnSetColor.setOnClickListener(btnListener);
         btnLED.setOnClickListener(btnListener);
+        btnActualTime.setOnClickListener(btnListener);
 
         //Empfangsbox soll nicht editierbar sein
         receiveText.setKeyListener(null);
@@ -216,6 +222,17 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             }
             else if (view == btnLED){
                 sendString("X++A$");
+            }
+            else if (view == btnActualTime){
+                Calendar currentTime = Calendar.getInstance();
+                int hours   = currentTime.get(Calendar.HOUR_OF_DAY);
+                int minute  = currentTime.get(Calendar.MINUTE);
+                int sekunde = currentTime.get(Calendar.SECOND);
+                sendString("XT"
+                        + ((hours<10)?("0" + hours):(hours))
+                        + ((minute<10)?("0" + minute):(minute))
+                        + ((sekunde<10)?("0" + sekunde):(sekunde))
+                        +"$");
             }
             else{
                 Toast.makeText(MainActivity.this,"Sorry! NOP for this button!", Toast.LENGTH_SHORT).show();

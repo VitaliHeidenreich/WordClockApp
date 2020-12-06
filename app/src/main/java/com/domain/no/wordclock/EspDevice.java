@@ -16,7 +16,7 @@ public class EspDevice {
     //Dif connection address
     private static String ConName = null;
     private static String ConAddress = null;
-    private static final String defDev = "Wordclock_";
+    private static final String defDev = "Wordclock";
 
     public String getName() {
         return Name;

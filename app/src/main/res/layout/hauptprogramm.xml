@@ -106,7 +106,7 @@
 
     <TextView
         android:id="@+id/txtConnectionstatus"
-        android:layout_width="385dp"
+        android:layout_width="match_parent   "
         android:layout_height="48dp"
         android:layout_alignStart="@+id/btnConnectBT"
         android:layout_alignLeft="@+id/btnConnectBT"
@@ -115,11 +115,11 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginEnd="-1dp"
-        android:layout_marginRight="-1dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
         android:layout_marginBottom="1dp"
-        android:textStyle="bold"
-        android:gravity="center" />
+        android:gravity="center"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btnLED"
@@ -136,6 +136,14 @@
         android:layout_marginEnd="68dp"
         android:layout_marginRight="68dp"
         android:text="LED ON/OFF" />
+
+    <Button
+        android:id="@+id/sendAndroidTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txtConnectionstatus"
+        android:layout_marginBottom="0dp"
+        android:text="clock time adjustment" />
 
 
 </RelativeLayout>
