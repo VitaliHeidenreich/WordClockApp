@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         public void onClick(View view) {
             if ( view==tbtn )
             {
-                sendString( "Hallo Welt!" );
+                sendString("XT000000$\n");
             }
             else if ( view == btnSendMessage)
             {
@@ -213,8 +213,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                     @Override
                     public void onColorChanged(int i) {
                         color = i;
-                        textViewColor.setText("XF"+Integer.toHexString(color).substring(2)+"$");
-                        sendString("XF"+Integer.toHexString(color).substring(2)+"$");
+                        textViewColor.setText("XF"+Integer.toHexString(color).substring(2)+"$\n");
+                        sendString("XF"+Integer.toHexString(color).substring(2)+"$\n");
                     }
 
                 });
@@ -232,10 +232,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                         + ((hours<10)?("0" + hours):(hours))
                         + ((minute<10)?("0" + minute):(minute))
                         + ((sekunde<10)?("0" + sekunde):(sekunde))
-                        +"$");
+                        +"$\n");
             }
             else{
-                Toast.makeText(MainActivity.this,"Sorry! NOP for this button!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"ERROR! BUTTON", Toast.LENGTH_SHORT).show();
             }
         }
     };
