@@ -1,6 +1,7 @@
 package com.domain.no.wordclock;
 
 import android.annotation.SuppressLint;
+import android.app.TimePickerDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -18,9 +19,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
@@ -46,7 +49,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     BluetoothConnectivity bt = new BluetoothConnectivity();
 
     String messageLog;
+    private int mHour, mMinute;
 
+    // Time Picker
+    TimePickerDialog timePickerDialog;
 
     //Objekte anlegen
     private EditText sendText;
@@ -62,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     private Button btnActualTime;
 
     private Toolbar myToolbar;
+
+    private CheckBox checkBoxTimeSetting;
 
     ColorPickerDialog colorPickerDialog;
     int color = Color.parseColor("#33b5e5");
@@ -89,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
         textViewColor = findViewById(R.id.textViewColor);
         txtConnectionstatus = (TextView) findViewById(R.id.txtConnectionstatus);
+
+        checkBoxTimeSetting = findViewById(R.id.checkBoxTimeSetting);
 
         //Testbutton
         btnSetColor = findViewById(R.id.btnSetColor);
@@ -224,15 +234,37 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                 sendString("X++A$");
             }
             else if (view == btnActualTime){
-                Calendar currentTime = Calendar.getInstance();
-                int hours   = currentTime.get(Calendar.HOUR_OF_DAY);
-                int minute  = currentTime.get(Calendar.MINUTE);
-                int sekunde = currentTime.get(Calendar.SECOND);
-                sendString("XT"
-                        + ((hours<10)?("0" + hours):(hours))
-                        + ((minute<10)?("0" + minute):(minute))
-                        + ((sekunde<10)?("0" + sekunde):(sekunde))
-                        +"$\n");
+
+                if(checkBoxTimeSetting.isChecked()) {
+                    Calendar currentTime = Calendar.getInstance();
+                    int hours   = currentTime.get(Calendar.HOUR_OF_DAY);
+                    int minute  = currentTime.get(Calendar.MINUTE);
+                    int sekunde = currentTime.get(Calendar.SECOND);
+                    sendString("XT"
+                            + ((hours<10)?("0" + hours):(hours))
+                            + ((minute<10)?("0" + minute):(minute))
+                            + ((sekunde<10)?("0" + sekunde):(sekunde)) +"$\n");
+                }
+                else{
+                    // Get Current Time
+                    final Calendar c = Calendar.getInstance();
+                    mHour = c.get(Calendar.HOUR_OF_DAY);
+                    mMinute = c.get(Calendar.MINUTE);
+
+                    // Launch Time Picker Dialog
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this,
+                            new TimePickerDialog.OnTimeSetListener() {
+
+                                @Override
+                                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                    sendString("XT"
+                                            + ((hourOfDay<10)?("0" + hourOfDay):(hourOfDay))
+                                            + ((minute<10)?("0" + minute):(minute))
+                                            + "00" +"$\n");
+                                }
+                            }, mHour, mMinute, true);
+                    timePickerDialog.show();
+                }
             }
             else{
                 Toast.makeText(MainActivity.this,"ERROR! BUTTON", Toast.LENGTH_SHORT).show();

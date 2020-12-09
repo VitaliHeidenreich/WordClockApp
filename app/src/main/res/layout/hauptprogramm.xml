@@ -109,7 +109,6 @@
         android:layout_width="match_parent   "
         android:layout_height="48dp"
         android:layout_alignStart="@+id/btnConnectBT"
-        android:layout_alignLeft="@+id/btnConnectBT"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
@@ -144,6 +143,14 @@
         android:layout_above="@+id/txtConnectionstatus"
         android:layout_marginBottom="0dp"
         android:text="clock time adjustment" />
+
+    <CheckBox
+        android:id="@+id/checkBoxTimeSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/sendAndroidTime"
+        android:layout_marginBottom="1dp"
+        android:text="Use time shown on your phone" />
 
 
 </RelativeLayout>
