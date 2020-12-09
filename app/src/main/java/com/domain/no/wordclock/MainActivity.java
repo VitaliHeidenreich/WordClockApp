@@ -143,14 +143,16 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             //connects to the device's address and checks if it's available
             try
             {
-                bt.setBluetoothSocket(dispositivo.createInsecureRfcommSocketToServiceRecord(bt.getUUID()));//create a RFCOMM (SPP) connection
+                bt.setBluetoothSocket(dispositivo.createInsecureRfcommSocketToServiceRecord(bt.getUUID()));
                 bt.getBluetoothSocket().connect();
                 connectionStatus(true);
             }
             catch(Exception e){Toast.makeText(getApplicationContext(),"Nope! (2)", Toast.LENGTH_SHORT).show();}
         }
         else{
-            Toast.makeText(MainActivity.this,"No WordUhr device found. Only following devices are connected:\n" + mArrayAdapter, Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this,
+                    "No WordUhr device found. Only following devices are connected:\n"
+                            + mArrayAdapter, Toast.LENGTH_SHORT).show();
         }
         // Input und Output anlegen
         try
@@ -195,8 +197,9 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         }
         return super.onOptionsItemSelected(item);
     }
-
-    // Auswertung der Tasten
+    // ####################################################################################################
+    // Auswertung der Tasten   ############################################################################
+    // ####################################################################################################
     private View.OnClickListener btnListener = new View.OnClickListener()
     {
         @Override
@@ -274,15 +277,12 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
     private void sendString( String str )
     {
-        try
-        {
-            if ( bt.getBluetoothSocket() != null )
-            {
+        try {
+            if ( bt.getBluetoothSocket() != null ){
                 bt.getTmpOut().write(str.getBytes());
             }
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             Toast.makeText(getApplicationContext(),e.getMessage(), Toast.LENGTH_SHORT).show();
             connectionStatus(false);
         }
@@ -292,17 +292,14 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         byte[] buffer = new byte[256];  // buffer store for the stream
         int bytes; // bytes returned from read()
         String readMessage = null;
-        try
-        {
-            if ( (bt.getTmpIn()!=null) && ( bt.getTmpIn().available() > 0) )
-            {
+        try {
+            if ( (bt.getTmpIn()!=null) && ( bt.getTmpIn().available() > 0) ) {
                 bytes = bt.getTmpIn().read(buffer);
                 readMessage = new String(buffer, 0, bytes);
                 Log.d(textBuffer, ">>>>>>>>>>>>>>>>>>> input data");
             }
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             Toast.makeText(getApplicationContext(),e.getMessage(), Toast.LENGTH_SHORT).show();
             connectionStatus(false);
         }

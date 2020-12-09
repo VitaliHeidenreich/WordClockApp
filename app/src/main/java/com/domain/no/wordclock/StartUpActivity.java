@@ -114,6 +114,9 @@ public class StartUpActivity extends AppCompatActivity{
                         if ( deviceList != null ){
                             connectionMenuVisibility(true);
                         }
+                        else{
+                            openErrorDialogInfo();
+                        }
                     }
                     else{
                         // nop
@@ -124,7 +127,7 @@ public class StartUpActivity extends AppCompatActivity{
                         openMainActivity();
                     }
                     else{
-                        Toast.makeText(StartUpActivity.this,"No device found.", Toast.LENGTH_SHORT).show();
+                        openErrorDialogInfo();
                     }
                 }
                 else if ( view == switchBT ){
@@ -146,6 +149,11 @@ public class StartUpActivity extends AppCompatActivity{
             }
         }
     };
+
+    public void openErrorDialogInfo(){
+        openErrorDialogConnectioninfo dialog = new openErrorDialogConnectioninfo();
+        dialog.show(getSupportFragmentManager(),"Info");
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     private void search_bt_device(){
