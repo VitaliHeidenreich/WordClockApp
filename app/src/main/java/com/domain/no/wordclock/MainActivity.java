@@ -2,13 +2,7 @@ package com.domain.no.wordclock;
 
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,15 +23,10 @@ import android.widget.Toast;
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.UUID;
+
+import petrov.kristiyan.colorpicker.ColorPicker;
 
 
 public class MainActivity extends AppCompatActivity implements SettingsDialog.ExampleDialogListener{
@@ -87,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
         //Buttons
         btnSendMessage = findViewById(R.id.sendMessageBtn);
-        btnLED = findViewById(R.id.btnLED);
+        btnLED = findViewById(R.id.btnSetColorToDef);
         btnActualTime = findViewById(R.id.sendAndroidTime);
 
         //TestMessages
@@ -234,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                 colorPickerDialog.show();
             }
             else if (view == btnLED){
-                sendString("X++A$");
+                openColorPickerDialog();
             }
             else if (view == btnActualTime){
 
@@ -354,4 +343,35 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             handler.postDelayed(this, 1);
         }
     };
+
+    public void openColorPickerDialog() {
+        final ColorPicker colorPicker = new ColorPicker(this);
+        ArrayList<String> color = new ArrayList<>();
+        color.add("#FF0000");
+        color.add("#FF8000");
+        color.add("#0000FF");
+        color.add("#00FF00");
+        color.add("#FF00FF");
+
+        color.add("#00FFFF");
+        color.add("#FFA500");
+        color.add("#CD853F");
+        color.add("#E6E6FA");
+        color.add("#FFFFFF");
+
+        colorPicker.setColors(color)
+                .setColumns(5)
+                .setRoundColorButton(true)
+                .setOnChooseColorListener(new ColorPicker.OnChooseColorListener() {
+                    @Override
+                    public void onChooseColor(int position, int color) {
+                        // Todo
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                }).show();
+    }
 }
