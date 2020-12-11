@@ -207,20 +207,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             }
             else if(view == btnSetColor){
                 // Auswahl der Farbe
-                colorPickerDialog = new ColorPickerDialog(MainActivity.this, color);
-                //colorPickerDialog.setAlphaSliderVisible(true);
-                colorPickerDialog.setHexValueEnabled(true);
-                colorPickerDialog.setTitle("Color picker");
-                colorPickerDialog.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
-                    @Override
-                    public void onColorChanged(int i) {
-                        color = i;
-                        textViewColor.setText("XF"+Integer.toHexString(color).substring(2)+"$\n");
-                        sendString("XF"+Integer.toHexString(color).substring(2)+"$\n");
-                    }
-
-                });
-                colorPickerDialog.show();
+                sendString("XFGAHSGDZ$$JHXSj12$XP00000H$\tXS00000A$\tXS00000L$\tXS00000L$\tXS00000O$\nXSXS%GHS\n\n");
             }
             else if (view == btnLED){
                 openColorPickerDialog();
@@ -365,7 +352,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                 .setOnChooseColorListener(new ColorPicker.OnChooseColorListener() {
                     @Override
                     public void onChooseColor(int position, int color) {
-                        // Todo
+                        String iRet = String.valueOf(color);
+                        sendString("XF" + Integer.toHexString(color).substring(2) +"$\n");
                     }
 
                     @Override
@@ -373,5 +361,9 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
 
                     }
                 }).show();
+    }
+
+    public String convertAndLimit(String a){
+        return a.substring(1);
     }
 }

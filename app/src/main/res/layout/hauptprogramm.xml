@@ -59,7 +59,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
         android:layout_marginBottom="92dp"
-        android:text="Color (OLD)"
+        android:text='Send PW "HALLO"'
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/receiveMessage" />
 
