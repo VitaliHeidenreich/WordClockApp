@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             }
             else if(view == btnSetColor){
                 // Auswahl der Farbe
-                sendString("XFGAHSGDZ$$JHXSj12$XP00000H$\tXS00000A$\tXS00000L$\tXS00000L$\tXS00000O$\nXSXS%GHS\n\n");
+                sendString("XFGAHSGDZ$$JHXSj12$XP00000H$\tXP00000A$\tXP00000L$\tXP00000L$\tXP00000O$\nXSXS%GHS\n\n");
             }
             else if (view == btnLED){
                 openColorPickerDialog();
